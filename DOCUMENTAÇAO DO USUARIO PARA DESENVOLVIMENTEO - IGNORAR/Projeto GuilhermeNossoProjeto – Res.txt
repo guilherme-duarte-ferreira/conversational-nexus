@@ -1,0 +1,153 @@
+Projeto Guilherme/NossoProjeto – Resumo Expandido
+Status: Em desenvolvimento ativo | Versão: 1. 2. 0 | Última Atualização: 25/05/2024
+
+1. Visão Geral do Projeto
+Objetivo Principal:
+Criar uma interface de IA conversacional avançada com:
+- Armazenamento persistente de histórico de conversas
+- Sistema RAG (Retrieval-Augmented Generation) para respostas contextualizadas
+- Arquitetura modular e escalável
+
+Tecnologias-Chave:
+| Componente | Tecnologias Usadas |
+|--------------------------|--------------------------------------------|
+| Backend | Python, FastAPI/Flask, SQLAlchemy ORM |
+| Banco de Dados | SQLite (fase atual) → PostgreSQL + PGVector |
+| IA Conversacional | GPT-4, Lovable (IA auxiliar) |
+| Processamento de Texto | SpaCy, Hugging Face Transformers |
+| Interface | OpenWebUI (base) + Customizações |
+
+Equipe de Desenvolvimento:
+- Você (Usuário): Líder técnico, tomador de decisões estratégicas
+- ChatGPT (Eu): Arquiteto de sistemas e consultor técnico
+- Lovable (IA): Especialista em análise de código e otimização
+
+2. Estrutura Detalhada do Projeto
+```
+ProjetoGuilherme/
+├── app. py Ponto de entrada principal (Flask/FastAPI)
+├── backend/
+│ ├── database/
+│ │ ├── database. py Conexão com DB, sessões e inicialização
+│ │ └── migrations/ Scripts de migração (Alembic)
+│ ├── models/ Modelos de dados
+│ │ ├── conversations. py Conversas (ID, título, metadados)
+│ │ └── messages. py Mensagens (relacionamento 1:N)
+│ ├── routers/ Endpoints API
+│ │ └── chats. py CRUD para conversas/mensagens
+│ └── utils/
+│ ├── chat_history. py Gerenciamento de histórico
+│ └── text_processor. py Pré-processamento de texto
+└── requirements. txt Dependências do projeto
+```
+
+3. Plano de Desenvolvimento (Roadmap)
+
+Fase 1: CRUD com SQLite (Atual)
+Status: 85% completo
+Tarefas:
+- [x] Configuração inicial do SQLAlchemy
+- [x] Modelagem de dados (Conversas ↔ Mensagens)
+- [ ] ~~Implementação completa de migrações com Alembic~~ (Adiado)
+- [x] Endpoints básicos para:
+- Criação de conversas
+- Armazenamento de mensagens
+- Recuperação de histórico
+- [ ] Testes automatizados com pytest (Em andamento)
+
+Problemas Recentes:
+- Tabelas não criadas automaticamente
+- Tipos de dados incompatíveis (JSON no SQLite)
+- Relacionamentos não persistentes
+
+Soluções Implementadas:
+1. Substituição de `JSON` → `TEXT`
+2. Forçar criação via `Base. metadata. create_all()`
+3. Padronização de UUIDs como `VARCHAR(36)`
+
+Fase 2: Migração para PostgreSQL
+Previsão: Junho/2024
+Preparativos:
+1. Dockerizar ambiente PostgreSQL
+2. Configurar PGVector para embeddings
+3. Script de migração SQLite → PostgreSQL
+
+Benefícios Esperados:
+- Suporte nativo a JSON
+- Escalabilidade vertical
+- Integração com bancos vetoriais
+
+Fase 3: Implementação do RAG
+Componentes Necessários:
+1. Pipeline de Embeddings:
+- Modelo: `all-MiniLM-L6-v2` (Hugging Face)
+- Armazenamento: PGVector/ChromaDB
+2. Mecanismo de Busca:
+- Similaridade de cosseno
+- Filtragem por contexto temporal
+3. Integração com IA:
+- Prompt engineering com contexto recuperado
+
+Fase 4: Otimização e Segurança
+Checklist:
+- [ ] Rate limiting
+- [ ] Autenticação JWT
+- [ ] Criptografia em repouso (SQLCipher)
+- [ ] Sistema de backup automatizado
+
+4. Fluxo de Trabalho Atual
+```mermaid
+graph TD
+A[Usuário Envia Mensagem] --> B[chat_history. py]
+B --> C{Conversa Existe? }
+C -->|Sim| D[Message. create()]
+C -->|Não| E[Conversation. create()]
+D --> F[Atualização no SQLite]
+E --> F
+F --> G[Resposta da IA]
+G --> H[Log de Interação]
+```
+
+5. Divisão de Responsabilidades
+| Componente | Responsável | Apoio Técnico |
+|-------------------------|---------------------|---------------------|
+| Arquitetura do Sistema | Você | ChatGPT |
+| Modelagem de Dados | ChatGPT + Lovable | SQLAlchemy Docs |
+| Integração de IA | Lovable | Hugging Face |
+| Testes e Validação | Você | pytest |
+| Documentação | ChatGPT | MkDocs |
+
+6. Desafios Técnicos em Curso
+Problema 1: Inconsistência nas Migrações
+- Causa: Conflito entre ORM e SQL puro
+- Solução Provisória: Desativar criação via SQL
+
+Problema 2: Serialização de Datetimes
+- Sintoma: `TypeError: Object of type datetime is not JSON serializable`
+- Solução: Usar `isoformat()` em timestamps
+
+Problema 3: Performance em Consultas
+- Monitorar: Query times > 500ms
+- Ação: Adicionar índices em `conversation_id`
+
+7. Próximos Passos Imediatos
+1. Finalizar testes de persistência
+```bash
+python3 -m pytest tests/ -v
+```
+2. Implementar sistema de logging unificado
+3. Criar Dockerfile para ambiente de produção
+4. Documentar endpoints API com Swagger
+
+8. Notas para Continuidade
+1. Backup Diário:
+```bash
+sqlite3 nosso_projeto. db ". backup backup/$(date +%Y%m%d). db"
+```
+2. Monitoramento:
+- Verificar tamanho do DB:
+```bash
+du -h backend/database/nosso_projeto. db
+```
+
+Estou preparado para continuar em qualquer ponto específico! Qual aspecto devemos explorar agora? 🛠️

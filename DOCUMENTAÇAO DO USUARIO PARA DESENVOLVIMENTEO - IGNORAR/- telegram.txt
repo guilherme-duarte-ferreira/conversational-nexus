@@ -1,0 +1,50 @@
+- telegram
+- ia
+- api tiktok
+- api youtube 
+
+-compra curso
+-fazer download
+ -subir no telegram
+-fazer o site
+
+
+- limpar quarto
+- banheiro
+- casa
+- 
+
+- sono
+- energia
+- coração/sangue
+- ansiedade
+
+- sacrifício e o proposito
+- estocando poder
+
+
+- ensaio mental
+- Dessa forma, é possível ensaiar e fortalecer o
+comportamento desejável. 
+- 
+
+
+Responda sempre em texto contínuo, sem divisões estruturadas, até que eu diga o contrário.
+
+1- Ao instalar monitoramento de notas no Linux ele não está puxando as últimas notas precisa marcar na parame 
+2- criar parâmetro para ressincronizar notas no monitoramento Linux
+
+
+cat /etc/issue
+cat /proc/cpuinfo |more
+cat /proc/meminfo |more
+
+
+Acerca deste cartão
+Está a ver ficheiros sugeridos que ajudam a voltar facilmente para a sua atividade mais recente no Google Drive.
+
+Pode gerir definições no menu do cartão ou ver mais opções em Personalizar o Chrome.
+
+
+
+`parametro` LIKE '%realizando%' OR `conteudo` LIKE '%realizando%' OR `finalidade` LIKE '%realizando%' OR `conteudo2` LIKE '%realizando%' OR `sr_recno` LIKE '%realizando%'

@@ -1,0 +1,61 @@
+# Documentação de Alterações - 17:11 03/02/2025
+
+## Análise e Correções do Schema do Banco de Dados
+
+### 1. Problemas Identificados
+- Uso incorreto do tipo JSON no SQLite
+- Falta de precisão nos campos temporais
+- Ausência de limites em campos VARCHAR
+- Duplicidade na criação de tabelas (SQL puro vs ORM)
+
+### 2. Correções Implementadas
+
+#### 2.1 Modificações nos Tipos de Dados
+- JSON -> TEXT (SQLite não suporta JSON nativo)
+- VARCHAR -> VARCHAR(36) para UUIDs
+- DATETIME -> TIMESTAMP WITH TIME ZONE para maior precisão
+
+#### 2.2 Schema SQL Corrigido
+```sql
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "conversations" (
+    "id" VARCHAR(36) NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "meta" TEXT,
+    PRIMARY KEY("id")
+);
+
+CREATE TABLE IF NOT EXISTS "messages" (
+    "id" VARCHAR(36) NOT NULL,
+    "conversation_id" VARCHAR(36) NOT NULL,
+    "role" VARCHAR(50) NOT NULL,
+    "content" TEXT NOT NULL,
+    "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id"),
+    FOREIGN KEY("conversation_id") REFERENCES "conversations"("id") ON DELETE CASCADE
+);
+COMMIT;
+```
+
+#### 2.3 Ajustes no ORM
+- Removida a criação de tabelas via SQL puro
+- Implementado `Base.metadata.create_all(bind=engine)` como única fonte de criação
+- Adicionados tipos corretos nos modelos SQLAlchemy
+
+### 3. Verificação e Testes
+- Comando para testar criação: `python3 -c "from backend.database.database import init_db; init_db()"`
+- Validação do schema: `sqlite3 backend/database/nosso_projeto.db ".schema"`
+
+### 4. Próximos Passos
+1. Monitorar logs para garantir que as alterações resolveram os problemas de persistência
+2. Implementar testes automatizados para validar a integridade do banco
+3. Considerar adicionar índices para otimização de consultas frequentes
+
+### 5. Considerações Importantes
+- Manter backup dos dados antes de aplicar alterações no schema
+- Verificar impacto nas queries existentes após as mudanças
+- Documentar todas as modificações para referência futura
+
+## Conclusão
+As alterações implementadas corrigem problemas fundamentais no schema do banco de dados, especialmente relacionados aos tipos de dados e à forma de criação das tabelas. A mudança para tipos mais apropriados no SQLite deve resolver os problemas de persistência e garantir maior consistência dos dados.

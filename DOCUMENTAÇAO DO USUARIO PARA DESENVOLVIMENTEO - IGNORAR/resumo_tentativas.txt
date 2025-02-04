@@ -1,0 +1,55 @@
+# Resumo das Tentativas para Resolver o Problema de Persistência
+
+## 1. Verificação da Integridade do Banco de Dados
+- Executei o comando:
+  ```bash
+  sqlite3 backend/database/nosso_projeto.db "pragma integrity_check;"
+  ```
+- Resultado: "ok", indicando que o banco de dados não está corrompido.
+
+## 2. Verificação da Existência das Tabelas
+- Tentei verificar a estrutura da tabela `conversations` com o comando:
+  ```bash
+  sqlite3 backend/database/nosso_projeto.db ".schema conversations"
+  ```
+- Não obtive retorno, indicando que a tabela não existe.
+
+- Tentei verificar a estrutura da tabela `messages` com o comando:
+  ```bash
+  sqlite3 backend/database/nosso_projeto.db ".schema messages"
+  ```
+- Também não obtive retorno, confirmando que a tabela não existe.
+
+## 3. Tentativa de Rodar Migrações
+- Tentei rodar as migrações com o comando:
+  ```bash
+  alembic downgrade base && alembic upgrade head
+  ```
+- Recebi um erro informando que não foi encontrado o arquivo de configuração `alembic.ini`.
+
+## 4. Criação do Arquivo de Configuração do Alembic
+- Criei o arquivo `alembic.ini` com a configuração básica necessária.
+
+## 5. Inicialização do Alembic
+- Inicializei o Alembic com o comando:
+  ```bash
+  alembic init backend/migrations
+  ```
+- A estrutura de migrações foi criada com sucesso.
+
+## 6. Tentativa de Gerar Migrações
+- Tentei gerar uma nova migração com o comando:
+  ```bash
+  alembic revision --autogenerate -m "Create conversations and messages tables"
+  ```
+- Recebi um erro indicando que não foi possível montar as colunas da chave primária para a tabela `conversations`.
+
+## 7. Atualização dos Modelos
+- Atualizei o arquivo `conversations.py` para incluir a definição da chave primária.
+- Atualizei o arquivo `messages.py` para garantir que a tabela seja criada corretamente.
+
+## 8. Tentativa de Gerar Migrações Novamente
+- Tentei rodar o comando de migração novamente, mas continuei recebendo erros relacionados à configuração do driver.
+
+## Conclusão
+As tentativas de resolver o problema de persistência no banco de dados SQLite foram frustradas por erros de configuração e a falta de tabelas. A solução pode envolver a verificação da configuração do Alembic e a criação das tabelas necessárias.

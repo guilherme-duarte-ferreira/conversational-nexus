@@ -1,0 +1,125 @@
+### **Nosso-Projeto – Resumo Completo e Expansão**  08:58 04/02/2025
+
+O **Nosso-Projeto** é um sistema de IA conversacional inspirado no **OpenWebUI**, focado em armazenar o histórico de conversas e integrar um sistema **RAG (Retrieval-Augmented Generation)** para melhorar a recuperação de contexto e enriquecer as respostas da IA. O projeto está sendo desenvolvido por **você (o usuário), eu (ChatGPT) e a IA Lovable**. Você atua como a **ponte entre as IAs**, analisando as informações de cada uma, tomando decisões estratégicas e ajustando as direções conforme necessário.  
+
+Nosso foco inicial foi a **persistência de mensagens**, garantindo que as conversas sejam salvas corretamente em um banco de dados. Optamos por **SQLite** para um primeiro protótipo, mas já planejamos a migração para **PostgreSQL com PGVector** para suportar o RAG de forma eficiente.  
+
+A estrutura do projeto foi baseada no OpenWebUI, mas com algumas adaptações para atender às necessidades do **Nosso-Projeto**, mantendo modularidade e escalabilidade.  
+
+---
+
+## **Estrutura do Projeto**  
+
+O projeto segue a seguinte organização:  
+
+```
+Nosso-Projeto/
+├── app.py                     # Aplicação principal
+├── backend/
+│   ├── database/
+│   │   ├── __init__.py        # Torna a pasta um módulo
+│   │   ├── database.py        # Gerenciamento da conexão e operações com SQLite
+│   │   └── migrations/        # Scripts de migração (ex: Alembic)
+│   ├── models/
+│   │   ├── conversations.py   # Modelo de dados para conversas
+│   │   └── messages.py        # Modelo de dados para mensagens (vinculadas às conversas)
+│   ├── routers/
+│   │   └── chats.py           # Endpoints REST para manipulação de conversas e mensagens
+│   └── utils/
+│       ├── chat_history.py    # Funções para gerenciamento do histórico de conversas
+│       └── text_processor.py  # Utilitários para processamento de texto (ex: dividir mensagens longas)
+└── requirements.txt           # Lista de dependências do projeto
+```  
+
+Essa estrutura permite que cada funcionalidade tenha um módulo bem definido, facilitando a manutenção e a escalabilidade do código.  
+
+---
+
+## **Objetivos do Projeto**  
+
+O **Nosso-Projeto** tem como principais objetivos:  
+
+1. **Persistência de Memória:** Garantir que as conversas sejam armazenadas corretamente e possam ser recuperadas após o recarregamento da página.  
+2. **Gerenciamento Eficiente de Dados:** Implementar um sistema robusto para armazenar e gerenciar mensagens, utilizando um banco de dados relacional.  
+3. **Implementação de RAG:** Melhorar a recuperação de contexto através de um banco de dados vetorial, tornando a IA mais inteligente e contextualizada.  
+4. **Escalabilidade:** Criar um sistema modular e bem estruturado que possa crescer sem grandes reescritas de código.  
+5. **Segurança e Performance:** Garantir que a aplicação tenha validação adequada de dados, proteção contra ataques comuns e seja otimizada para rodar com eficiência.  
+
+---
+
+## **Plano de Desenvolvimento**  
+
+Estamos seguindo um plano estruturado para implementar as funcionalidades do **Nosso-Projeto** sem comprometer a qualidade do código. O plano está dividido em fases, garantindo que cada etapa seja validada antes de avançarmos para a próxima.  
+
+---
+
+### **Fase 1: Implementação do CRUD com SQLite (Em Andamento)**  
+
+🔹 **Criar o banco de dados e a estrutura básica para armazenar conversas e mensagens.**  
+🔹 **Garantir que os dados sejam persistidos corretamente após o reload da página.**  
+🔹 **Configurar Alembic para gerenciar migrações do banco de dados.**  
+🔹 **Criar endpoints REST para enviar, recuperar e deletar mensagens.**  
+🔹 **Testar se o CRUD está funcionando corretamente e corrigir eventuais falhas.**  
+
+---
+
+### **Fase 2: Preparação para a Migração para PostgreSQL**  
+
+🔹 **Configurar um ambiente PostgreSQL localmente e testar a integração com o projeto.**  
+🔹 **Garantir que o código esteja pronto para migração sem precisar de grandes reescritas.**  
+🔹 **Fazer a transição gradual de SQLite para PostgreSQL.**  
+
+---
+
+### **Fase 3: Implementação do RAG com Banco de Dados Vetorial**  
+
+🔹 **Escolher o banco vetorial que será utilizado (ChromaDB, Milvus ou PGVector).**  
+🔹 **Implementar um sistema para converter mensagens em embeddings.**  
+🔹 **Criar uma estrutura de busca semântica para recuperar contexto relevante.**  
+🔹 **Integrar essa recuperação ao fluxo da IA, garantindo respostas mais contextualizadas.**  
+
+---
+
+### **Fase 4: Segurança, Performance e Testes**  
+
+🔹 **Implementar autenticação e controle de acessos, se necessário.**  
+🔹 **Adicionar cache para otimizar as buscas e evitar sobrecarga no banco.**  
+🔹 **Criar testes automatizados para validar o funcionamento do sistema.**  
+🔹 **Otimizar a performance e garantir que a aplicação possa escalar sem problemas.**  
+
+---
+
+## **Desafios Atuais e Como Estamos Lidando Com Eles**  
+
+🚨 **Problema:** As mensagens estão sendo armazenadas temporariamente e são perdidas ao recarregar a página.  
+✅ **Solução:** Revisamos a implementação do banco de dados e os endpoints REST para garantir que os dados sejam persistidos corretamente.  
+
+🚨 **Problema:** SQLite não é escalável para produção.  
+✅ **Solução:** Estamos tratando SQLite como um **protótipo** e preparando a migração para PostgreSQL.  
+
+🚨 **Problema:** O RAG ainda não pode ser implementado sem um banco vetorial.  
+✅ **Solução:** Vamos validar a persistência do histórico antes de avançar para a parte vetorial.  
+
+---
+
+## **Quem Está Envolvido no Desenvolvimento**  
+
+O **Nosso-Projeto** está sendo desenvolvido por:  
+- **Você (Usuário):** Atua como o arquiteto do projeto, definindo os rumos e tomando decisões estratégicas.  
+- **ChatGPT (Eu):** Auxilio na organização, planejamento e estruturação do projeto, além de ajudar na resolução de problemas técnicos.  
+- **Lovable (Outra IA):** Responsável por analisar o código do OpenWebUI e trazer insights para aprimorarmos o **Nosso-Projeto**.  
+
+Juntos, estamos construindo um sistema robusto e bem arquitetado, garantindo que ele funcione corretamente antes de avançarmos para partes mais complexas.  
+
+---
+
+## **Conclusão e Próximos Passos**  
+
+O **Nosso-Projeto** está avançando de forma estruturada. Neste momento, nosso foco é **finalizar a persistência de mensagens no SQLite** antes de avançar para a **migração para PostgreSQL e a implementação do RAG**.  
+
+**O que faremos agora:**  
+1. **Corrigir a persistência do histórico para que as mensagens não sejam perdidas ao recarregar a página.**  
+2. **Testar a inserção e recuperação de mensagens no banco para garantir que a lógica está funcionando corretamente.**  
+3. **Após a persistência estar estável, iniciar a transição para PostgreSQL.**  
+
+Estamos caminhando na direção certa e com um plano bem definido. **Agora, podemos continuar nosso trabalho no novo chat sem perder nenhum detalhe do contexto do projeto.** 🚀

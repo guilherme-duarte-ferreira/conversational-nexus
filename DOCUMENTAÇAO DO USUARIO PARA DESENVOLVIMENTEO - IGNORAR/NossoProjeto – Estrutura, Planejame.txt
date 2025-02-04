@@ -1,0 +1,192 @@
+NossoProjeto – Estrutura, Planejamento e Implementação
+
+O NossoProjeto é uma implementação baseada no OpenWebUI, cujo objetivo é criar uma interface de IA conversacional que armazene o histórico de conversas usando SQLite e implemente RAG (Retrieval-Augmented Generation) para recuperar contexto de maneira mais eficiente. Para otimizar o desenvolvimento, decidimos copiar a estrutura do OpenWebUI e adaptar ao nosso projeto.
+
+1. Organização do Projeto
+Para garantir modularidade e escalabilidade, definimos uma estrutura organizada de diretórios e arquivos, semelhante ao OpenWebUI:
+
+
+Verify
+Run
+Copy code
+NossoProjeto/
+├── app.py                     # Aplicação principal
+├── backend/
+│   ├── database/
+│   │   ├── __init__.py        # Torna a pasta um módulo
+│   │   ├── database.py        # Gerenciamento da conexão e operações com SQLite
+│   │   └── migrations/        # Scripts de migração (ex: Alembic)
+│   ├── models/
+│   │   ├── conversations.py   # Modelo de dados para conversas
+│   │   └── messages.py        # Modelo de dados para mensagens (vinculadas às conversas)
+│   ├── routers/
+│   │   └── chats.py           # Endpoints REST para manipulação de conversas e mensagens
+│   └── utils/
+│       ├── chat_history.py    # Funções para gerenciamento do histórico de conversas
+│       └── text_processor.py  # Utilitários para processamento de texto (ex: dividir mensagens longas)
+└── requirements.txt           # Lista de dependências do projeto
+Essa estrutura reflete a separação de responsabilidades, garantindo que cada funcionalidade tenha um módulo bem definido.
+
+2. Implementação do Banco de Dados com SQLite
+O OpenWebUI utiliza SQLAlchemy para gerenciar bancos relacionais, suportando tanto PostgreSQL quanto SQLite. Para o NossoProjeto, decidimos utilizar SQLite para armazenar o histórico de conversas, pois ele é leve e não requer instalação adicional.
+
+Etapas para configurar o banco:
+
+Criar o módulo database/ para armazenar a lógica do banco de dados.
+Criar database.py para gerenciar a conexão, criação de tabelas e operações básicas.
+Implementar o sistema de migrations usando Alembic para futuras atualizações da estrutura do banco.
+Criar os modelos de dados em models/, separando conversations.py e messages.py, garantindo que cada mensagem esteja vinculada à sua conversa.
+Criar as funções CRUD para gerenciar o histórico de conversas e mensagens.
+Ajustar app.py e routers/chats.py para que as interações com o chat utilizem o banco de dados em vez do armazenamento em JSON.
+Testar se as conversas são salvas corretamente no banco e se o sistema pode recuperar o histórico ao reiniciar.
+Essa etapa substituirá o atual sistema baseado em JSON e trará persistência real para o chat.
+
+3. Planejamento da Implementação do RAG (Retrieval-Augmented Generation)
+Depois que o histórico estiver funcionando com SQLite, o próximo passo será implementar RAG para recuperar informações mais relevantes e enriquecer o contexto da IA.
+
+O OpenWebUI usa bancos vetoriais como ChromaDB, Milvus ou PGVector (PostgreSQL com suporte a vetores) para armazenar embeddings de texto e permitir buscas semânticas eficientes.
+
+No NossoProjeto, decidimos que:
+
+SQLite será usado para armazenar conversas e histórico.
+Um banco de dados vetorial será necessário para armazenar embeddings e permitir a recuperação semântica.
+ChromaDB pode ser a melhor escolha inicial, pois é leve e fácil de integrar ao Python.
+Se for necessário mais desempenho, podemos considerar Milvus ou PGVector.
+Etapas para Implementação do RAG:
+
+Escolher e configurar um banco de dados vetorial (ChromaDB, Milvus ou PGVector).
+Criar um sistema para processar conversas e transformar mensagens em embeddings.
+Salvar esses embeddings no banco vetorial.
+No momento da consulta, buscar embeddings similares para recuperar contexto relevante.
+Incluir esse contexto no prompt da IA para melhorar a resposta.
+Isso permitirá que o NossoProjeto consiga lembrar informações importantes de forma mais inteligente, garantindo que a IA forneça respostas mais precisas e contextualizadas.
+
+4. Comparação com OpenWebUI e Ajustes na Arquitetura
+O OpenWebUI tem uma arquitetura bem estruturada para lidar com banco de dados e persistência, utilizando:
+
+SQLAlchemy para ORM
+Migrations com Alembic e Peewee
+Armazenamento híbrido (banco relacional + banco vetorial)
+Validação de dados com Pydantic
+API organizada com FastAPI
+Nosso projeto seguirá uma abordagem semelhante, mas adaptada para nossas necessidades. Algumas diferenças notáveis incluem:
+
+Vamos usar SQLite inicialmente, enquanto o OpenWebUI usa PostgreSQL por padrão.
+Precisamos decidir qual banco vetorial usar para implementar o RAG.
+Nossa API pode ser mais simples, sem necessidade de autenticação robusta como no OpenWebUI.
+5. Próximos Passos
+Finalizar a implementação do CRUD do histórico com SQLite.
+Testar a persistência de mensagens e recuperação do histórico.
+Definir o banco de dados vetorial que será usado no RAG.
+Integrar a geração e recuperação de embeddings para melhorar o contexto das respostas.
+Ajustar e documentar a estrutura do projeto para garantir escalabilidade.
+Após finalizar a implementação do SQLite e garantir que o sistema funciona corretamente, avançamos para o RAG e a integração do banco vetorial.
+
+Esse documento contém tudo o que discutimos até agora. Você pode copiá-lo para a outra aba para garantir que a IA lá tenha o mesmo contexto e possa continuar o planejamento sem perder nenhuma informação. Assim, podemos seguir para a implementação com tudo bem estruturado.
+
+Resumo do Processo para Resolver o Problema de Persistência
+Descrição do Problema
+O usuário estava enfrentando um problema de persistência no armazenamento do histórico de conversas usando SQLite. As mensagens estavam sendo armazenadas temporariamente, mas não persistiam após o recarregamento da página, resultando na perda de dados.
+
+Análise Inicial
+Iniciamos a análise do problema revisando a estrutura do projeto e identificando os arquivos relevantes que lidam com a persistência de dados. Os principais arquivos analisados foram:
+
+app.py: Contém a lógica principal da aplicação e as rotas.
+backend/database/database.py: Gerencia a conexão e operações com o banco de dados SQLite.
+backend/models/conversations.py e backend/models/messages.py: Definem os modelos de dados para conversas e mensagens.
+backend/utils/chat_history.py: Gerencia o histórico de conversas.
+Passos Tomados
+Busca por Arquivos Relevantes:
+
+Utilizamos a ferramenta de busca para identificar arquivos que lidam com SQLite e o armazenamento de mensagens.
+Leitura e Análise do Código:
+
+Analisamos o arquivo database.py e confirmamos que a inicialização do banco de dados e a criação das tabelas estavam corretas.
+Revisamos os modelos de dados em conversations.py e messages.py para garantir que estavam configurados corretamente.
+Verificamos a lógica de salvamento de conversas e mensagens em chat_history.py.
+Implementação de Alterações:
+
+No arquivo app.py, alteramos a função send_message() para garantir que um novo conversation_id fosse gerado se não fosse fornecido.
+Adicionamos um evento de envio de mensagem no arquivo events.js para garantir que a função enviarMensagem fosse chamada corretamente ao enviar mensagens pela interface do usuário.
+Testes Realizados:
+
+Realizamos testes manuais para verificar se as mensagens estavam sendo salvas corretamente no banco de dados após as alterações.
+Inserimos uma mensagem de teste diretamente no banco de dados usando comandos SQL e confirmamos que a inserção estava funcionando.
+Resultados:
+
+A inserção manual de mensagens no banco de dados não funcionou corretamente, e a persistência através da interface do usuário continua sendo problemática.
+Mesmo após as alterações, a função de envio de mensagens não foi configurada adequadamente, resultando na falha em salvar as mensagens no banco de dados.
+Próximos Passos
+Continuar testando a aplicação, enviando mensagens pela interface e verificando SE elas aparecem no banco de dados.
+Monitorar os logs do servidor para identificar quaisquer erros que possam ocorrer durante o processamento das mensagens, que ainda não estão sendo registrados corretamente.
+Considerar a implementação de testes automatizados para garantir que a funcionalidade de persistência funcione conforme esperado em futuras alterações.
+Conclusão
+Apesar dos desafios enfrentados, estamos comprometidos em resolver as questões de persistência no banco de dados. Com a continuidade dos testes e a análise dos logs, acreditamos que poderemos identificar e corrigir os problemas, garantindo que a funcionalidade de envio de mensagens funcione corretamente em breve. A implementação de testes automatizados também será uma prioridade para evitar recorrências e assegurar a estabilidade da aplicação.
+
+Resumo das Tentativas para Resolver o Problema de Persistência
+1. Verificação da Integridade do Banco de Dados
+Executei o comando:
+bash
+
+Verify
+Run
+Copy code
+sqlite3 backend/database/nosso_projeto.db "pragma integrity_check;"
+Resultado: "ok", indicando que o banco de dados não está corrompido.
+2. Verificação da Existência das Tabelas
+Tentei verificar a estrutura da tabela conversations com o comando:
+
+bash
+
+Verify
+Run
+Copy code
+sqlite3 backend/database/nosso_projeto.db ".schema conversations"
+Não obtive retorno, indicando que a tabela não existe.
+
+Tentei verificar a estrutura da tabela messages com o comando:
+
+bash
+
+Verify
+Run
+Copy code
+sqlite3 backend/database/nosso_projeto.db ".schema messages"
+Também não obtive retorno, confirmando que a tabela não existe.
+
+3. Tentativa de Rodar Migrações
+Tentei rodar as migrações com o comando:
+bash
+
+Verify
+Run
+Copy code
+alembic downgrade base && alembic upgrade head
+Recebi um erro informando que não foi encontrado o arquivo de configuração alembic.ini.
+4. Criação do Arquivo de Configuração do Alembic
+Criei o arquivo alembic.ini com a configuração básica necessária.
+5. Inicialização do Alembic
+Inicializei o Alembic com o comando:
+bash
+
+Verify
+Run
+Copy code
+alembic init backend/migrations
+A estrutura de migrações foi criada com sucesso.
+6. Tentativa de Gerar Migrações
+Tentei gerar uma nova migração com o comando:
+bash
+
+Verify
+Run
+Copy code
+alembic revision --autogenerate -m "Create conversations and messages tables"
+Recebi um erro indicando que não foi possível montar as colunas da chave primária para a tabela conversations.
+7. Atualização dos Modelos
+Atualizei o arquivo conversations.py para incluir a definição da chave primária.
+Atualizei o arquivo messages.py para garantir que a tabela seja criada corretamente.
+8. Tentativa de Gerar Migrações Novamente
+Tentei rodar o comando de migração novamente, mas continuei recebendo erros relacionados à configuração do driver.
+Conclusão
+As tentativas de resolver o problema de persistência no banco de dados SQLite foram frustradas por erros de configuração e a falta de tabelas. A solução pode envolver a verificação da configuração do Alembic e a criação das tabelas necessárias.

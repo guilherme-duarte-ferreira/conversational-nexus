@@ -1,0 +1,111 @@
+17:09 03/02/2025
+
+o NossoProjeto está sendo desenvolvido em colaboração entre você, eu (ChatGPT) e a Lovable. eu guilherme atuo como a ponte entre as duas IAs, analisando informações, tomando decisões e ponderando as ações que serão implementadas. Dessa forma, garantimos que todas as escolhas sejam feitas com base nas melhores práticas e no que faz mais sentido para o projeto.
+
+
+Aqui está um resumo expandido e detalhado de tudo o que discutimos até agora, garantindo que sua próxima aba tenha todas as informações necessárias.  
+
+---  
+
+**NossoProjeto – Estrutura, Planejamento e Implementação**  
+
+O **NossoProjeto** é uma implementação baseada no **OpenWebUI**, cujo objetivo é criar uma interface de IA conversacional que armazene o histórico de conversas usando **SQLite** e implemente **RAG (Retrieval-Augmented Generation)** para recuperar contexto de maneira mais eficiente. Para otimizar o desenvolvimento, decidimos copiar a estrutura do OpenWebUI e adaptar ao nosso projeto.  
+
+---  
+
+### **1. Organização do Projeto**  
+
+Para garantir modularidade e escalabilidade, definimos uma estrutura organizada de diretórios e arquivos, semelhante ao OpenWebUI:  
+
+```
+NossoProjeto/
+├── app.py                     # Aplicação principal
+├── backend/
+│   ├── database/
+│   │   ├── __init__.py        # Torna a pasta um módulo
+│   │   ├── database.py        # Gerenciamento da conexão e operações com SQLite
+│   │   └── migrations/        # Scripts de migração (ex: Alembic)
+│   ├── models/
+│   │   ├── conversations.py   # Modelo de dados para conversas
+│   │   └── messages.py        # Modelo de dados para mensagens (vinculadas às conversas)
+│   ├── routers/
+│   │   └── chats.py           # Endpoints REST para manipulação de conversas e mensagens
+│   └── utils/
+│       ├── chat_history.py    # Funções para gerenciamento do histórico de conversas
+│       └── text_processor.py  # Utilitários para processamento de texto (ex: dividir mensagens longas)
+└── requirements.txt           # Lista de dependências do projeto
+```  
+
+Essa estrutura reflete a separação de responsabilidades, garantindo que cada funcionalidade tenha um módulo bem definido.  
+
+---  
+
+### **2. Implementação do Banco de Dados com SQLite**  
+
+O OpenWebUI utiliza **SQLAlchemy** para gerenciar bancos relacionais, suportando tanto **PostgreSQL** quanto **SQLite**. Para o **NossoProjeto**, decidimos utilizar **SQLite** para armazenar o histórico de conversas, pois ele é leve e não requer instalação adicional.  
+
+**Etapas para configurar o banco:**  
+1. Criar o módulo `database/` para armazenar a lógica do banco de dados.  
+2. Criar `database.py` para gerenciar a conexão, criação de tabelas e operações básicas.  
+3. Implementar o sistema de **migrations** usando **Alembic** para futuras atualizações da estrutura do banco.  
+4. Criar os modelos de dados em `models/`, separando `conversations.py` e `messages.py`, garantindo que cada mensagem esteja vinculada à sua conversa.  
+5. Criar as funções **CRUD** para gerenciar o histórico de conversas e mensagens.  
+6. Ajustar `app.py` e `routers/chats.py` para que as interações com o chat utilizem o banco de dados em vez do armazenamento em JSON.  
+7. Testar se as conversas são salvas corretamente no banco e se o sistema pode recuperar o histórico ao reiniciar.  
+
+Essa etapa substituirá o atual sistema baseado em JSON e trará persistência real para o chat.  
+
+---  
+
+### **3. Planejamento da Implementação do RAG (Retrieval-Augmented Generation)**  
+
+Depois que o histórico estiver funcionando com SQLite, o próximo passo será implementar **RAG** para recuperar informações mais relevantes e enriquecer o contexto da IA.  
+
+O OpenWebUI usa **bancos vetoriais** como **ChromaDB, Milvus ou PGVector (PostgreSQL com suporte a vetores)** para armazenar embeddings de texto e permitir buscas semânticas eficientes.  
+
+No **NossoProjeto**, decidimos que:  
+- **SQLite** será usado para armazenar conversas e histórico.  
+- **Um banco de dados vetorial** será necessário para armazenar embeddings e permitir a recuperação semântica.  
+- **ChromaDB** pode ser a melhor escolha inicial, pois é leve e fácil de integrar ao Python.  
+- Se for necessário mais desempenho, podemos considerar **Milvus** ou **PGVector**.  
+
+**Etapas para Implementação do RAG:**  
+1. Escolher e configurar um banco de dados vetorial (ChromaDB, Milvus ou PGVector).  
+2. Criar um sistema para processar conversas e transformar mensagens em embeddings.  
+3. Salvar esses embeddings no banco vetorial.  
+4. No momento da consulta, buscar embeddings similares para recuperar contexto relevante.  
+5. Incluir esse contexto no prompt da IA para melhorar a resposta.  
+
+Isso permitirá que o **NossoProjeto** consiga lembrar informações importantes de forma mais inteligente, garantindo que a IA forneça respostas mais precisas e contextualizadas.  
+
+---  
+
+### **4. Comparação com OpenWebUI e Ajustes na Arquitetura**  
+
+O OpenWebUI tem uma arquitetura bem estruturada para lidar com banco de dados e persistência, utilizando:  
+- **SQLAlchemy para ORM**  
+- **Migrations com Alembic e Peewee**  
+- **Armazenamento híbrido (banco relacional + banco vetorial)**  
+- **Validação de dados com Pydantic**  
+- **API organizada com FastAPI**  
+
+Nosso projeto seguirá uma abordagem semelhante, mas adaptada para nossas necessidades. Algumas diferenças notáveis incluem:  
+- Vamos usar **SQLite** inicialmente, enquanto o OpenWebUI usa **PostgreSQL por padrão**.  
+- Precisamos decidir qual **banco vetorial** usar para implementar o RAG.  
+- Nossa API pode ser mais simples, sem necessidade de autenticação robusta como no OpenWebUI.  
+
+---  
+
+### **5. Próximos Passos**  
+
+1. **Finalizar a implementação do CRUD do histórico com SQLite.**  
+2. **Testar a persistência de mensagens e recuperação do histórico.**  
+3. **Definir o banco de dados vetorial que será usado no RAG.**  
+4. **Integrar a geração e recuperação de embeddings para melhorar o contexto das respostas.**  
+5. **Ajustar e documentar a estrutura do projeto para garantir escalabilidade.**  
+
+Após finalizar a implementação do SQLite e garantir que o sistema funciona corretamente, avançamos para o **RAG** e a integração do banco vetorial.  
+
+---  
+
+Esse documento contém tudo o que discutimos até agora. Você pode copiá-lo para a outra aba para garantir que a IA lá tenha o mesmo contexto e possa continuar o planejamento sem perder nenhuma informação. Assim, podemos seguir para a implementação com tudo bem estruturado.

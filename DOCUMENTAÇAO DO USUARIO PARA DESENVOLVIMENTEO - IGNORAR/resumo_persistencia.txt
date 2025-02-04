@@ -1,0 +1,41 @@
+# Resumo do Processo para Resolver o Problema de Persistência
+
+## Descrição do Problema
+O usuário estava enfrentando um problema de persistência no armazenamento do histórico de conversas usando SQLite. As mensagens estavam sendo armazenadas temporariamente, mas não persistiam após o recarregamento da página, resultando na perda de dados.
+
+## Análise Inicial
+Iniciamos a análise do problema revisando a estrutura do projeto e identificando os arquivos relevantes que lidam com a persistência de dados. Os principais arquivos analisados foram:
+- `app.py`: Contém a lógica principal da aplicação e as rotas.
+- `backend/database/database.py`: Gerencia a conexão e operações com o banco de dados SQLite.
+- `backend/models/conversations.py` e `backend/models/messages.py`: Definem os modelos de dados para conversas e mensagens.
+- `backend/utils/chat_history.py`: Gerencia o histórico de conversas.
+
+## Passos Tomados
+
+1. **Busca por Arquivos Relevantes**:
+   - Utilizamos a ferramenta de busca para identificar arquivos que lidam com SQLite e o armazenamento de mensagens.
+
+2. **Leitura e Análise do Código**:
+   - Analisamos o arquivo `database.py` e confirmamos que a inicialização do banco de dados e a criação das tabelas estavam corretas.
+   - Revisamos os modelos de dados em `conversations.py` e `messages.py` para garantir que estavam configurados corretamente.
+   - Verificamos a lógica de salvamento de conversas e mensagens em `chat_history.py`.
+
+3. **Implementação de Alterações**:
+   - No arquivo `app.py`, alteramos a função `send_message()` para garantir que um novo `conversation_id` fosse gerado se não fosse fornecido.
+   - Adicionamos um evento de envio de mensagem no arquivo `events.js` para garantir que a função `enviarMensagem` fosse chamada corretamente ao enviar mensagens pela interface do usuário.
+
+4. **Testes Realizados**:
+   - Realizamos testes manuais para verificar se as mensagens estavam sendo salvas corretamente no banco de dados após as alterações.
+   - Inserimos uma mensagem de teste diretamente no banco de dados usando comandos SQL e confirmamos que a inserção estava funcionando.
+
+5. **Resultados**:
+   - A inserção manual de mensagens no banco de dados não funcionou corretamente, e a persistência através da interface do usuário continua sendo problemática.
+   - Mesmo após as alterações, a função de envio de mensagens não foi configurada adequadamente, resultando na falha em salvar as mensagens no banco de dados.
+
+## Próximos Passos
+- Continuar testando a aplicação, enviando mensagens pela interface e verificando SE elas aparecem no banco de dados.
+- Monitorar os logs do servidor para identificar quaisquer erros que possam ocorrer durante o processamento das mensagens, que ainda não estão sendo registrados corretamente.
+- Considerar a implementação de testes automatizados para garantir que a funcionalidade de persistência funcione conforme esperado em futuras alterações.
+
+## Conclusão
+Apesar dos desafios enfrentados, estamos comprometidos em resolver as questões de persistência no banco de dados. Com a continuidade dos testes e a análise dos logs, acreditamos que poderemos identificar e corrigir os problemas, garantindo que a funcionalidade de envio de mensagens funcione corretamente em breve. A implementação de testes automatizados também será uma prioridade para evitar recorrências e assegurar a estabilidade da aplicação.

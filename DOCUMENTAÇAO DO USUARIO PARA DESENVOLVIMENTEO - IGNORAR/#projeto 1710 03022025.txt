@@ -1,0 +1,44 @@
+#projeto 17:10 03/02/2025
+
+
+eu pensei em fazer isso já que já temos objetivos definidos
+Vamos começar implementando o SQLite para armazenar o histórico das conversas e garantir que ele seja inicializado corretamente quando o usuário rodar o sistema. Depois, podemos integrar o RAG para melhorar a recuperação de informações e aprimorar as respostas da IA. 
+
+mas ates de tudo preciso que vc pegue essas informações do projeto do open web ui 
+
+
+"Aqui está um plano estruturado para configurar o banco de dados SQLite no Nosso Projeto, baseado na abordagem do OpenWebUI:
+
+1. Criar o Módulo de Banco de Dados  
+   - Criar a pasta 'database/' se ainda não existir.  
+   - Criar o arquivo 'database.py' para gerenciar as operações do SQLite.  
+   - Adicionar um '__init__.py' para tratar a pasta como um módulo.
+
+2. Definir a Estrutura do Banco  
+   - Criar uma tabela 'conversations' para armazenar conversas.  
+   - Criar uma tabela 'messages' para registrar cada mensagem dentro de uma conversa.  
+   - Definir relações entre 'conversations' e 'messages' para garantir que as mensagens estejam vinculadas corretamente.
+
+3. Implementar a Inicialização do Banco  
+   - Criar uma função para verificar se o banco já existe e, caso contrário, criar as tabelas.
+
+4. Implementar Funções CRUD para Conversas  
+   - Criar funções para adicionar, buscar, atualizar e excluir conversas do banco.
+
+5. Implementar Funções CRUD para Mensagens  
+   - Criar funções para armazenar mensagens dentro de uma conversa.  
+   - Criar um método para recuperar as últimas mensagens de uma conversa para manter o contexto.
+
+6. Integrar o Banco com o Código Existente  
+   - Substituir o armazenamento atual em JSON pelo banco SQLite.  
+   - Modificar 'chat_history.py' para utilizar as novas funções do banco.  
+   - Ajustar 'app.py' para chamar as funções do banco em vez do sistema de arquivos.
+
+7. Testar o Novo Sistema de Banco  
+   - Rodar a aplicação e verificar se as conversas são salvas corretamente.  
+   - Testar a recuperação do histórico para garantir que o banco substituiu o JSON sem perda de funcionalidade.
+
+Após essa etapa, poderemos avançar para a implementação do RAG e da persistência de memória vetorial.
+
+Por favor, pegue essas informações já prontas do OpenWebUI para que eu possa avaliar e pensar na estrutura do meu projeto." 
+
