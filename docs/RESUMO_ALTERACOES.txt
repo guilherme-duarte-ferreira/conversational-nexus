@@ -1,0 +1,63 @@
+
+# Resumo das Alterações no Sistema de Persistência
+Data: 03/03/2024
+Versão: 1.0.0
+
+## 1. Estrutura Atual
+O projeto atual é um clone do ChatGPT utilizando Open Web UI como referência,
+com foco na implementação do sistema de persistência de dados.
+
+## 2. Principais Componentes
+- Backend: Python com Flask/FastAPI
+- Banco de Dados: SQLite (com planos de migração para PostgreSQL)
+- ORM: SQLAlchemy
+- Estrutura de Dados: Conversas e Mensagens
+
+## 3. Problemas Identificados
+1. Conflito na criação de tabelas:
+   - Duplicidade entre ORM e SQL puro
+   - Tipos de dados incompatíveis (JSON no SQLite)
+   
+2. Persistência instável:
+   - UUIDs não padronizados
+   - Problemas com timestamps
+   
+3. Migrações inconsistentes:
+   - Conflito entre diferentes métodos de criação de tabelas
+
+## 4. Soluções Implementadas
+1. Padronização de Tipos:
+   - VARCHAR(36) para UUIDs
+   - TEXT para campos JSON
+   - TIMESTAMP para campos de data/hora
+
+2. Simplificação da Inicialização:
+   - Remoção da criação via SQL puro
+   - Uso exclusivo do SQLAlchemy ORM
+
+3. Melhorias na Estrutura:
+   - Diretórios organizados por funcionalidade
+   - Separação clara entre modelos e rotas
+
+## 5. Próximos Passos
+1. Implementar sistema de logging unificado
+2. Criar testes automatizados
+3. Preparar migração para PostgreSQL
+4. Implementar backup automático
+
+## 6. Notas Importantes
+- Manter backup regular do banco SQLite
+- Monitorar tamanho do banco de dados
+- Documentar todas as alterações de schema
+
+## 7. Comandos Úteis
+Para inicializar o banco:
+```bash
+python3 -c "from backend.database.database import init_db; init_db()"
+```
+
+Para backup:
+```bash
+sqlite3 nosso_projeto.db ".backup backup/$(date +%Y%m%d).db"
+```
+
