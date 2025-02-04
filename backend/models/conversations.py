@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, JSON
+from sqlalchemy import Column, String, DateTime, Text
 from backend.database.database import Base
 from datetime import datetime
 import uuid
@@ -6,10 +6,10 @@ import uuid
 class Conversation(Base):
     __tablename__ = "conversations"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    title = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    meta = Column(JSON, default=dict)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = Column(String(255), nullable=False)
+    timestamp = Column(DateTime(timezone=True), default=datetime.utcnow)
+    meta = Column(Text, default='{}')
 
     @staticmethod
     def create(title="Nova Conversa"):

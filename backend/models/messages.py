@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from backend.database.database import Base
 from datetime import datetime
@@ -7,11 +7,11 @@ import uuid
 class Message(Base):
     __tablename__ = "messages"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    conversation_id = Column(String, ForeignKey('conversations.id', ondelete='CASCADE'))
-    role = Column(String, nullable=False)
-    content = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    conversation_id = Column(String(36), ForeignKey('conversations.id', ondelete='CASCADE'))
+    role = Column(String(50), nullable=False)
+    content = Column(Text, nullable=False)
+    timestamp = Column(DateTime(timezone=True), default=datetime.utcnow)
     
     conversation = relationship("Conversation", backref="messages")
 

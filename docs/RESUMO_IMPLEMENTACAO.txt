@@ -1,48 +1,40 @@
-# Resumo da Implementação do Sistema de Persistência
+# Implementação do Sistema de Persistência
+Data: 03/03/2024
 
-## 1. Estrutura do Banco de Dados
-- Implementado usando SQLAlchemy + SQLite
-- Duas tabelas principais: conversations e messages
-- Relacionamento one-to-many entre conversas e mensagens
-- Cascade delete implementado para manter integridade referencial
+## Alterações Realizadas
 
-## 2. Principais Mudanças
+1. Atualização do database.py:
+   - Removida criação de tabelas via SQL puro
+   - Implementada inicialização via SQLAlchemy ORM
+   - Adicionado context manager para gerenciamento de sessões
 
-### Database
-- Criação de context manager para gerenciar conexões
-- Implementação de função init_db() para criar tabelas
-- Backup com SQL puro além do ORM
-- Garantia de diretório de dados existente
+2. Atualização do modelo Conversation:
+   - Tipo VARCHAR(36) para UUID
+   - Tipo TEXT para meta (substituindo JSON)
+   - Timestamp com timezone
+   - Métodos CRUD otimizados
 
-### Modelos
-- Conversation: id, title, timestamp, meta
-- Message: id, conversation_id, role, content, timestamp
-- Uso de UUIDs como identificadores
-- Métodos estáticos para operações CRUD
+3. Atualização do modelo Message:
+   - Tipo VARCHAR(36) para UUID
+   - Relacionamento CASCADE com Conversation
+   - Tipo TEXT para content
+   - Timestamp com timezone
 
-### Chat History
-- Sistema de logging para rastreamento de erros
-- Funções para salvar e recuperar conversas
-- Tratamento de erros em todas as operações
-- Formatação ISO para timestamps
+## Como Testar
 
-## 3. Melhorias de Segurança
-- Fechamento automático de conexões
-- Proteção contra SQL injection via ORM
-- Validação de dados antes da persistência
+1. Inicializar o banco:
+```bash
+python3 -c "from backend.database.database import init_db; init_db()"
+```
 
-## 4. Pontos de Atenção
-- Necessário monitorar o tamanho do banco
-- Implementar limpeza periódica de dados antigos
-- Considerar índices para queries frequentes
+2. Verificar schema:
+```bash
+sqlite3 backend/database/nosso_projeto.db ".schema"
+```
 
-## 5. Próximos Passos Sugeridos
-- Implementar sistema de backup
-- Adicionar cache para consultas frequentes
-- Criar endpoints para exportação de dados
-- Implementar sistema de migração com Alembic
+## Próximos Passos
 
-## Conclusão Técnica
-O sistema agora possui persistência robusta com SQLite, usando SQLAlchemy como ORM.
-A estrutura permite expansão futura e mantém a integridade dos dados.
-Recomenda-se monitoramento inicial para garantir performance.
+1. Implementar testes automatizados
+2. Adicionar índices para otimização
+3. Configurar sistema de backup
+4. Preparar migração para PostgreSQL

@@ -21,38 +21,12 @@ def init_db():
     """Inicializa o banco de dados e cria as tabelas se não existirem"""
     ensure_data_directory()
     Base.metadata.create_all(bind=engine)
-    
-    # Também criamos as tabelas via SQL puro como backup
-    with get_db() as db:
-        db.execute('''
-            CREATE TABLE IF NOT EXISTS conversations (
-                id TEXT PRIMARY KEY,
-                title TEXT NOT NULL,
-                timestamp TEXT NOT NULL,
-                meta JSON
-            )
-        ''')
-        
-        db.execute('''
-            CREATE TABLE IF NOT EXISTS messages (
-                id TEXT PRIMARY KEY,
-                conversation_id TEXT NOT NULL,
-                role TEXT NOT NULL,
-                content TEXT NOT NULL,
-                timestamp TEXT NOT NULL,
-                FOREIGN KEY (conversation_id) REFERENCES conversations (id)
-                ON DELETE CASCADE
-            )
-        ''')
-        db.commit()
 
 @contextmanager
 def get_db():
     """Context manager para conexão com o banco"""
-    ensure_data_directory()
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
+    db = SessionLocal()
     try:
-        yield conn
+        yield db
     finally:
-        conn.close()
+        db.close()
